@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - example.env
+      - .env
     networks:
       - ylab_network
     ports:
