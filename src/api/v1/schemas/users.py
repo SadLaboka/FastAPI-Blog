@@ -6,25 +6,26 @@ from pydantic import BaseModel
 
 __all__ = (
     "Token",
+    "UserLogin",
     "UserModel",
     "UserCreate",
+    "UserUpdate"
 )
 
 
 class Token(BaseModel):
     access_token: str
-    token_type: str
-
-
-class TokenPayload(BaseModel):
-    uuid: uuid_pkg.UUID
-    username: int
-    email: int
+    refresh_token: str
 
 
 class UserBase(BaseModel):
     username: str
     email: str
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
 
 class UserCreate(UserBase):
@@ -36,3 +37,8 @@ class UserModel(UserBase):
     created_at: datetime
     is_superuser: bool
     is_active: bool
+
+
+class UserUpdate(BaseModel):
+    username: str = None
+    email: str = None

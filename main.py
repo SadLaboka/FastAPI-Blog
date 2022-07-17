@@ -4,7 +4,10 @@ from fastapi import FastAPI
 
 from src.api.v1.resources import posts, users
 from src.core import config
-from src.db import cache, redis_cache
+from src.db import (
+    cache,
+    redis_cache,
+)
 
 app = FastAPI(
     # Конфигурируем название проекта. Оно будет отображаться в документации
@@ -28,7 +31,29 @@ def startup():
     """Подключаемся к базам при старте сервера"""
     cache.cache = redis_cache.CacheRedis(
         cache_instance=redis.Redis(
-            host=config.REDIS_HOST, port=config.REDIS_PORT, max_connections=10
+            host=config.REDIS_HOST,
+            port=config.REDIS_PORT,
+            max_connections=10,
+            decode_responses=True,
+            db=0
+        )
+    )
+    cache.blocked_access_tokens = redis_cache.CacheRedis(
+        cache_instance=redis.Redis(
+            host=config.REDIS_HOST,
+            port=config.REDIS_PORT,
+            max_connections=10,
+            decode_responses=True,
+            db=1
+        )
+    )
+    cache.active_refresh_tokens = redis_cache.CacheRefreshTkns(
+        cache_instance=redis.Redis(
+            host=config.REDIS_HOST,
+            port=config.REDIS_PORT,
+            max_connections=10,
+            decode_responses=True,
+            db=2
         )
     )
 
@@ -37,6 +62,8 @@ def startup():
 def shutdown():
     """Отключаемся от баз при выключении сервера"""
     cache.cache.close()
+    cache.active_refresh_tokens.close()
+    cache.blocked_access_tokens.close()
 
 
 # Подключаем роутеры к серверу

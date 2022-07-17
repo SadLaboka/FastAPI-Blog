@@ -16,6 +16,7 @@ PROJECT_NAME: str = os.getenv("PROJECT_NAME", "ylab_hw_3")
 REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
 CACHE_EXPIRE_IN_SECONDS: int = 60 * 5  # 5 минут
+REFRESH_TOKENS_EXPIRE_IN_SECONDS: int = 60 * 60 * 24 * 30  # 30 Дней
 
 # Настройки Postgres
 POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
